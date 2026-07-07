@@ -33,7 +33,7 @@ const Cards = () => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5000/api/cards', {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/cards`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setCards(res.data);
@@ -66,14 +66,14 @@ const Cards = () => {
       
       if (action === 'delete') {
         if (window.confirm('Are you sure you want to delete this card?')) {
-          await axios.delete(`http://localhost:5000/api/cards/${id}`, { headers });
+          await axios.delete(`${import.meta.env.VITE_API_URL}/cards/${id}`, { headers });
         } else return;
       } else if (action === 'duplicate') {
-        await axios.post(`http://localhost:5000/api/cards/${id}/duplicate`, {}, { headers });
+        await axios.post(`${import.meta.env.VITE_API_URL}/cards/${id}/duplicate`, {}, { headers });
       } else if (action === 'archive') {
-        await axios.put(`http://localhost:5000/api/cards/${id}/archive`, {}, { headers });
+        await axios.put(`${import.meta.env.VITE_API_URL}/cards/${id}/archive`, {}, { headers });
       } else if (action === 'favorite') {
-        await axios.put(`http://localhost:5000/api/cards/${id}/favorite`, {}, { headers });
+        await axios.put(`${import.meta.env.VITE_API_URL}/cards/${id}/favorite`, {}, { headers });
       }
       
       fetchCards();

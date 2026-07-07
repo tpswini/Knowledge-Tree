@@ -23,7 +23,7 @@ const Achievements = () => {
     const fetchAchievements = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get('http://localhost:5000/api/achievements', {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/achievements`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setAchievements(res.data);

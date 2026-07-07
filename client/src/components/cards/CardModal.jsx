@@ -219,9 +219,9 @@ const CardModal = ({ isOpen, onClose, cardToEdit, initialCategory, onSave }) => 
       };
 
       if (cardToEdit) {
-        await axios.put(`http://localhost:5000/api/cards/${cardToEdit.id}`, payload, { headers });
+        await axios.put(`${import.meta.env.VITE_API_URL}/cards/${cardToEdit.id}`, payload, { headers });
       } else {
-        await axios.post('http://localhost:5000/api/cards', payload, { headers });
+        await axios.post(`${import.meta.env.VITE_API_URL}/cards`, payload, { headers });
       }
       
       onSave();

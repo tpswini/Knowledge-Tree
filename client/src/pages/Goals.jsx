@@ -20,7 +20,7 @@ const Goals = () => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5000/api/goals', {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/goals`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setGoals(res.data);
@@ -58,9 +58,9 @@ const Goals = () => {
       const token = localStorage.getItem('token');
       const headers = { Authorization: `Bearer ${token}` };
       if (goalToEdit) {
-        await axios.put(`http://localhost:5000/api/goals/${goalToEdit.id}`, formData, { headers });
+        await axios.put(`${import.meta.env.VITE_API_URL}/goals/${goalToEdit.id}`, formData, { headers });
       } else {
-        await axios.post('http://localhost:5000/api/goals', formData, { headers });
+        await axios.post(`${import.meta.env.VITE_API_URL}/goals`, formData, { headers });
       }
       setIsModalOpen(false);
       fetchGoals();
@@ -73,7 +73,7 @@ const Goals = () => {
     if (!window.confirm('Delete this goal?')) return;
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/goals/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/goals/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchGoals();
@@ -86,7 +86,7 @@ const Goals = () => {
     try {
       const token = localStorage.getItem('token');
       const status = newProgress === 100 ? 'Completed' : (newProgress === 0 ? 'Pending' : 'In Progress');
-      await axios.put(`http://localhost:5000/api/goals/${id}`, { progress: newProgress, status }, {
+      await axios.put(`${import.meta.env.VITE_API_URL}/goals/${id}`, { progress: newProgress, status }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchGoals();

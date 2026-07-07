@@ -15,7 +15,7 @@ const Timeline = () => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5000/api/cards', {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/cards`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       // Sort cards strictly by date descending

@@ -21,7 +21,7 @@ const Journal = () => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5000/api/journals', {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/journals`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setJournals(res.data);
@@ -41,7 +41,7 @@ const Journal = () => {
     setIsSubmitting(true);
     try {
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:5000/api/journals', formData, {
+      await axios.post(`${import.meta.env.VITE_API_URL}/journals`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setIsModalOpen(false);

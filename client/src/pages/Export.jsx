@@ -7,7 +7,7 @@ const Export = () => {
     try {
       const token = localStorage.getItem('token');
       // Fetch all cards for export
-      const res = await axios.get('http://localhost:5000/api/cards', {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/cards`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const cards = res.data;

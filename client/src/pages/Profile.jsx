@@ -16,8 +16,8 @@ const Profile = () => {
         
         // Fetch stats and achievements
         const [dashRes, achRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/dashboard/summary', { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get('http://localhost:5000/api/achievements', { headers: { Authorization: `Bearer ${token}` } })
+          axios.get(`${import.meta.env.VITE_API_URL}/dashboard/summary`, { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`${import.meta.env.VITE_API_URL}/achievements`, { headers: { Authorization: `Bearer ${token}` } })
         ]);
 
         setSummary(dashRes.data);
@@ -35,7 +35,7 @@ const Profile = () => {
     try {
       const token = localStorage.getItem('token');
       // Just fetch all cards for export
-      const res = await axios.get('http://localhost:5000/api/cards', {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/cards`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const cards = res.data;
