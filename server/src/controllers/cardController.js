@@ -63,7 +63,11 @@ exports.updateCard = async (req, res) => {
       return res.status(404).json({ message: 'Card not found or unauthorized' });
     }
 
-    if (updateData.timeSpent) updateData.timeSpent = parseInt(updateData.timeSpent);
+    if (updateData.timeSpent) {
+      updateData.timeSpent = parseInt(updateData.timeSpent);
+    } else {
+      updateData.timeSpent = null;
+    }
 
     const card = await prisma.knowledgeCard.update({
       where: { id: parseInt(id) },
