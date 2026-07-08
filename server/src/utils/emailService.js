@@ -45,4 +45,49 @@ const sendPasswordResetEmail = async (toEmail, resetToken, clientUrl) => {
   }
 };
 
-module.exports = { sendPasswordResetEmail };
+const sendVerificationEmail = async (toEmail, verificationToken, clientUrl) => {
+  try {
+    const verifyLink = `${clientUrl}/verify-email/${verificationToken}`;
+
+    const mailOptions = {
+      to: toEmail,
+      subject: 'Verify your email - Knowledge Tree',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
+          <h2 style="color: #1a472a; text-align: center;">Knowledge Tree</h2>
+          <h3 style="color: #333;">Welcome to the forest! 🌱</h3>
+          <p style="color: #555; line-height: 1.5;">
+            We're excited to have you. Please verify your email address to activate your account and start planting your first Knowledge Cards.
+          </p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${verifyLink}" style="background-color: #1a472a; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
+              Verify Email Address
+            </a>
+          </div>
+          <p style="color: #777; font-size: 12px; margin-top: 30px; text-align: center;">
+            If you did not sign up for an account, you can safely ignore this email.
+          </p>
+        </div>
+      `,
+    };
+
+    if (!process.env.GMAIL_WEBHOOK_URL) {
+      console.error('ERROR: GMAIL_WEBHOOK_URL is not defined in .env');
+      return { success: false, error: 'Email service is not configured.' };
+    }
+
+    await axios.post(process.env.GMAIL_WEBHOOK_URL, {
+      to: mailOptions.to,
+      subject: mailOptions.subject,
+      html: mailOptions.html
+    });
+    
+    console.log(`Verification email sent to ${toEmail} via Webhook`);
+    return { success: true };
+  } catch (error) {
+    console.error('Error sending verification email via webhook:', error);
+    return { success: false, error: error.message || 'Failed to send email' };
+  }
+};
+
+module.exports = { sendPasswordResetEmail, sendVerificationEmail };

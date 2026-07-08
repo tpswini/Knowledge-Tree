@@ -20,8 +20,13 @@ model User {
   cards          KnowledgeCard[]
   journals       JournalEntry[]
   goals          Goal[]
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+  isVerified           Boolean         @default(false)
+  verificationToken    String?
+  verificationTokenExp DateTime?
+
+  @@map("user")
 }
 
 model KnowledgeCard {
@@ -42,6 +47,8 @@ model KnowledgeCard {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@map("knowledgecard")
 }
 
 model JournalEntry {
@@ -56,6 +63,8 @@ model JournalEntry {
   user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+
+  @@map("journalentry")
 }
 
 model Goal {
@@ -69,4 +78,6 @@ model Goal {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("goal")
 }

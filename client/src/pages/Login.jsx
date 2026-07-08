@@ -1,7 +1,8 @@
 import { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { Mail, Lock, Eye, EyeOff, Leaf, Sun, Moon, AlertCircle } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Leaf, AlertCircle, CheckCircle } from 'lucide-react';
+import axios from 'axios';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -9,6 +10,9 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isUnverified, setIsUnverified] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendSuccess, setResendSuccess] = useState('');
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -21,9 +25,28 @@ const Login = () => {
       await login(email, password);
       navigate('/dashboard');
     } catch (err) {
+      if (err.response?.data?.unverified) {
+        setIsUnverified(true);
+      }
       setError(err.response?.data?.message || 'Login failed. Please try again.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    setResendLoading(true);
+    setResendSuccess('');
+    setError('');
+    
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/auth/resend-verification`, { email });
+      setResendSuccess('Verification email resent! Please check your inbox.');
+      setIsUnverified(false);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to resend email.');
+    } finally {
+      setResendLoading(false);
     }
   };
 
@@ -78,6 +101,24 @@ const Login = () => {
               <AlertCircle size={18} />
               {error}
             </div>
+          )}
+          
+          {resendSuccess && (
+            <div className="mb-6 p-4 bg-emerald-50 text-emerald-600 rounded-xl flex items-center gap-3 border border-emerald-100 text-sm font-medium animate-in fade-in slide-in-from-top-2">
+              <CheckCircle size={18} />
+              {resendSuccess}
+            </div>
+          )}
+
+          {isUnverified && (
+            <button 
+              onClick={handleResend}
+              disabled={resendLoading}
+              className="w-full mb-6 py-2.5 bg-orange-100 hover:bg-orange-200 text-orange-800 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              <Mail size={16} />
+              {resendLoading ? 'Sending...' : 'Resend Verification Email'}
+            </button>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">

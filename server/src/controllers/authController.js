@@ -3,7 +3,8 @@ const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('@prisma/client');
 const { checkAndAwardAchievements } = require('../utils/achievementService');
 const { awardXP } = require('../utils/xpService');
-const { sendPasswordResetEmail } = require('../utils/emailService');
+const crypto = require('crypto');
+const { sendPasswordResetEmail, sendVerificationEmail } = require('../utils/emailService');
 
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || 'knowledge_tree_super_secret_key';
@@ -30,19 +31,24 @@ exports.register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const verificationTokenExp = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
     const user = await prisma.user.create({
       data: {
         name,
         email,
         password: hashedPassword,
+        verificationToken,
+        verificationTokenExp
       },
     });
 
-    const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '1d' });
+    const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+    await sendVerificationEmail(email, verificationToken, clientUrl);
 
     res.status(201).json({ 
-      message: 'User registered successfully', 
-      token,
+      message: 'Registration successful. Please check your email to verify your account.', 
       user: { id: user.id, name: user.name, email: user.email }
     });
   } catch (error) {
@@ -67,6 +73,13 @@ exports.login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    if (!user.isVerified) {
+      return res.status(403).json({ 
+        message: 'Please verify your email address to log in.',
+        unverified: true 
+      });
     }
 
     // Daily Login & Streak Logic
@@ -194,5 +207,75 @@ exports.resetPassword = async (req, res) => {
       return res.status(400).json({ message: 'Token expired' });
     }
     res.status(500).json({ message: 'Internal server error or invalid token' });
+  }
+};
+
+exports.verifyEmail = async (req, res) => {
+  try {
+    const { token } = req.params;
+
+    const user = await prisma.user.findFirst({
+      where: {
+        verificationToken: token,
+        verificationTokenExp: { gt: new Date() }
+      }
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired verification token' });
+    }
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        isVerified: true,
+        verificationToken: null,
+        verificationTokenExp: null
+      }
+    });
+
+    res.json({ message: 'Email verified successfully! You can now log in.' });
+  } catch (error) {
+    console.error('Email verification error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+exports.resendVerification = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (user.isVerified) {
+      return res.status(400).json({ message: 'Account is already verified' });
+    }
+
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const verificationTokenExp = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        verificationToken,
+        verificationTokenExp
+      }
+    });
+
+    const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+    await sendVerificationEmail(user.email, verificationToken, clientUrl);
+
+    res.json({ message: 'Verification email resent successfully' });
+  } catch (error) {
+    console.error('Resend verification error:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
