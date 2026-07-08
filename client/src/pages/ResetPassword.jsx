@@ -25,7 +25,7 @@ const ResetPassword = () => {
     setError('');
     
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/reset-password/${token}`, { password });
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/reset-password`, { token, newPassword: password });
       setMessage(res.data.message);
       setTimeout(() => navigate('/login'), 3000);
     } catch (err) {
