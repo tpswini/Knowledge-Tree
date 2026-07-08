@@ -9,7 +9,6 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { register } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -21,7 +20,7 @@ const Register = () => {
     
     try {
       await register(name, email, password);
-      setSuccessMessage(true);
+      navigate('/verify-email', { state: { email } });
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed. Please try again.');
     } finally {
@@ -69,26 +68,7 @@ const Register = () => {
         </div>
 
         <div className="w-full max-w-[400px]">
-          {successMessage ? (
-            <div className="text-center animate-in zoom-in duration-300">
-              <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Mail className="text-emerald-600" size={40} />
-              </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Check your email!</h2>
-              <p className="text-gray-500 mb-8">
-                We've sent a verification link to <span className="font-bold text-gray-800">{email}</span>. 
-                Please click the link in that email to activate your account.
-              </p>
-              <Link 
-                to="/login"
-                className="w-full inline-block py-3 bg-[#1a472a] hover:bg-[#1a472a]/90 text-white rounded-xl text-sm font-bold transition-all shadow-md shadow-[#1a472a]/20"
-              >
-                Go to Login
-              </Link>
-            </div>
-          ) : (
-            <>
-              <div className="mb-10 text-center lg:text-left">
+          <div className="mb-10 text-center lg:text-left">
                 <h2 className="text-3xl font-bold text-gray-900 mb-3 flex items-center justify-center lg:justify-start gap-2">
                   Create Account <Leaf className="text-emerald-500" size={28} fill="currentColor" />
                 </h2>
@@ -169,8 +149,6 @@ const Register = () => {
                 Already have an account?{' '}
                 <Link to="/login" className="text-[#1a472a] font-bold hover:underline">Login here</Link>
               </p>
-            </>
-          )}
         </div>
       </div>
     </div>

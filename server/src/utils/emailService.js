@@ -47,8 +47,6 @@ const sendPasswordResetEmail = async (toEmail, resetToken, clientUrl) => {
 
 const sendVerificationEmail = async (toEmail, verificationToken, clientUrl) => {
   try {
-    const verifyLink = `${clientUrl}/verify-email/${verificationToken}`;
-
     const mailOptions = {
       to: toEmail,
       subject: 'Verify your email - Knowledge Tree',
@@ -57,12 +55,12 @@ const sendVerificationEmail = async (toEmail, verificationToken, clientUrl) => {
           <h2 style="color: #1a472a; text-align: center;">Knowledge Tree</h2>
           <h3 style="color: #333;">Welcome to the forest! 🌱</h3>
           <p style="color: #555; line-height: 1.5;">
-            We're excited to have you. Please verify your email address to activate your account and start planting your first Knowledge Cards.
+            We're excited to have you. Please enter the following 6-digit code to verify your email address and activate your account.
           </p>
           <div style="text-align: center; margin: 30px 0;">
-            <a href="${verifyLink}" style="background-color: #1a472a; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
-              Verify Email Address
-            </a>
+            <div style="background-color: #f0fdf4; border: 2px dashed #1a472a; color: #1a472a; padding: 15px 30px; border-radius: 8px; font-size: 28px; font-weight: bold; letter-spacing: 4px; display: inline-block;">
+              ${verificationToken}
+            </div>
           </div>
           <p style="color: #777; font-size: 12px; margin-top: 30px; text-align: center;">
             If you did not sign up for an account, you can safely ignore this email.

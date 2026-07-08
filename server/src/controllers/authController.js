@@ -31,7 +31,8 @@ exports.register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     
-    const verificationToken = crypto.randomBytes(32).toString('hex');
+    // Generate a 6-digit OTP
+    const verificationToken = Math.floor(100000 + Math.random() * 900000).toString();
     const verificationTokenExp = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
     const user = await prisma.user.create({
@@ -212,17 +213,22 @@ exports.resetPassword = async (req, res) => {
 
 exports.verifyEmail = async (req, res) => {
   try {
-    const { token } = req.params;
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return res.status(400).json({ message: 'Email and OTP are required' });
+    }
 
     const user = await prisma.user.findFirst({
       where: {
-        verificationToken: token,
+        email,
+        verificationToken: otp,
         verificationTokenExp: { gt: new Date() }
       }
     });
 
     if (!user) {
-      return res.status(400).json({ message: 'Invalid or expired verification token' });
+      return res.status(400).json({ message: 'Invalid or expired OTP' });
     }
 
     await prisma.user.update({
@@ -234,7 +240,13 @@ exports.verifyEmail = async (req, res) => {
       }
     });
 
-    res.json({ message: 'Email verified successfully! You can now log in.' });
+    const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '1d' });
+
+    res.json({ 
+      message: 'Email verified successfully!',
+      token,
+      user: { id: user.id, name: user.name, email: user.email }
+    });
   } catch (error) {
     console.error('Email verification error:', error);
     res.status(500).json({ message: 'Internal server error' });
@@ -259,7 +271,8 @@ exports.resendVerification = async (req, res) => {
       return res.status(400).json({ message: 'Account is already verified' });
     }
 
-    const verificationToken = crypto.randomBytes(32).toString('hex');
+    // Generate a 6-digit OTP
+    const verificationToken = Math.floor(100000 + Math.random() * 900000).toString();
     const verificationTokenExp = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
     await prisma.user.update({
