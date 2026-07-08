@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('@prisma/client');
 const { checkAndAwardAchievements } = require('../utils/achievementService');
 const { awardXP } = require('../utils/xpService');
+const { sendPasswordResetEmail } = require('../utils/emailService');
 
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || 'knowledge_tree_super_secret_key';
@@ -137,7 +138,6 @@ exports.getMe = async (req, res) => {
   }
 };
 
-// Mock implementations for forgot and reset password
 exports.forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -151,13 +151,18 @@ exports.forgotPassword = async (req, res) => {
       return res.status(200).json({ message: 'If an account with that email exists, we have sent a reset link.' });
     }
 
-    // MOCK: Generate a token and "send" it
+    // Generate a reset token
     const resetToken = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '15m' });
-    console.log(`\n\n--- MOCK EMAIL ---`);
-    console.log(`To: ${email}`);
-    console.log(`Subject: Password Reset Request`);
-    console.log(`Body: Click here to reset your password: http://localhost:5173/reset-password?token=${resetToken}`);
-    console.log(`------------------\n\n`);
+    
+    // Get the client URL from env or use default localhost
+    const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+
+    // Send the email
+    const emailSent = await sendPasswordResetEmail(email, resetToken, clientUrl);
+    
+    if (!emailSent) {
+      return res.status(500).json({ message: 'Failed to send reset email. Please try again later.' });
+    }
 
     res.status(200).json({ message: 'If an account with that email exists, we have sent a reset link.' });
   } catch (error) {
