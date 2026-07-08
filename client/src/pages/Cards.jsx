@@ -6,6 +6,7 @@ import {
   ChevronLeft, ChevronRight, ArrowRight
 } from 'lucide-react';
 import CardModal from '../components/cards/CardModal';
+import CardViewModal from '../components/cards/CardViewModal';
 
 const Cards = () => {
   const [cards, setCards] = useState([]);
@@ -15,7 +16,9 @@ const Cards = () => {
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [cardToEdit, setCardToEdit] = useState(null);
+  const [viewCard, setViewCard] = useState(null);
   const [initialCategory, setInitialCategory] = useState(null);
+  const [initialSchema, setInitialSchema] = useState(null);
 
   // Search & Filter State
   const [search, setSearch] = useState('');
@@ -28,6 +31,18 @@ const Cards = () => {
     isFavorite: false,
     isArchived: false
   });
+
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [cardToDelete, setCardToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  
+  const [templateToDelete, setTemplateToDelete] = useState(null);
+  const [hiddenTemplates, setHiddenTemplates] = useState(() => {
+    const stored = localStorage.getItem('hiddenTemplates');
+    return stored ? JSON.parse(stored) : [];
+  });
+  
+  const [toastMessage, setToastMessage] = useState('');
 
   const fetchCards = async () => {
     setIsLoading(true);
@@ -48,9 +63,10 @@ const Cards = () => {
     fetchCards();
   }, []);
 
-  const openCreateModal = (category = 'Leaf') => {
+  const openCreateModal = (category = 'Leaf', schema = null) => {
     setCardToEdit(null);
     setInitialCategory(category);
+    setInitialSchema(schema);
     setIsModalOpen(true);
   };
 
@@ -59,15 +75,33 @@ const Cards = () => {
     setIsModalOpen(true);
   };
 
+  const confirmDelete = async () => {
+    if (!cardToDelete) return;
+    setIsDeleting(true);
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${import.meta.env.VITE_API_URL}/cards/${cardToDelete}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      fetchCards();
+    } catch (err) {
+      alert('Failed to delete card');
+    } finally {
+      setIsDeleting(false);
+      setDeleteModalOpen(false);
+      setCardToDelete(null);
+    }
+  };
+
   const handleAction = async (action, id) => {
     try {
       const token = localStorage.getItem('token');
       const headers = { Authorization: `Bearer ${token}` };
       
       if (action === 'delete') {
-        if (window.confirm('Are you sure you want to delete this card?')) {
-          await axios.delete(`${import.meta.env.VITE_API_URL}/cards/${id}`, { headers });
-        } else return;
+        setCardToDelete(id);
+        setDeleteModalOpen(true);
+        return;
       } else if (action === 'duplicate') {
         await axios.post(`${import.meta.env.VITE_API_URL}/cards/${id}/duplicate`, {}, { headers });
       } else if (action === 'archive') {
@@ -95,6 +129,19 @@ const Cards = () => {
     const cats = new Set(cards.map(c => c.category).filter(Boolean));
     return Array.from(cats).sort();
   }, [cards]);
+
+  const customTemplates = useMemo(() => {
+    const templates = {};
+    cards.forEach(card => {
+      if (card.content?.isCustom && card.content?.schema) {
+        const schema = card.content.schema;
+        if (schema.name && !templates[schema.name] && !hiddenTemplates.includes(schema.name)) {
+          templates[schema.name] = schema;
+        }
+      }
+    });
+    return Object.values(templates);
+  }, [cards, hiddenTemplates]);
 
   const hasActiveFilters = filters.timeframe !== 'All' || filters.category !== 'All' || 
                            filters.difficulty !== 'All' || filters.isFavorite || filters.isArchived || search !== '';
@@ -149,20 +196,22 @@ const Cards = () => {
 
   const getCardStyle = (category) => {
     switch(category?.toLowerCase()) {
+      case 'concept': return { bg: 'bg-[#f0f9f0]', text: 'text-[#5a8c64]', icon: '💡' };
+      case 'code': return { bg: 'bg-[#f5f0fb]', text: 'text-[#9b72cf]', icon: '💻' };
+      case 'resource': return { bg: 'bg-[#f0f5fb]', text: 'text-[#6395d8]', icon: '📚' };
+      case 'project': return { bg: 'bg-[#fbf5f0]', text: 'text-[#c1865a]', icon: '🚀' };
+      case 'quick note': return { bg: 'bg-[#fcfaf0]', text: 'text-[#d4b953]', icon: '📝' };
+      case 'memory': return { bg: 'bg-[#fff0f0]', text: 'text-[#e57373]', icon: '🧠' };
+      case 'custom': return { bg: 'bg-white', text: 'text-gray-600', icon: '✨' };
+      // Fallbacks for old data
       case 'leaf': return { bg: 'bg-[#f0f9f0]', text: 'text-[#5a8c64]', icon: '🍃' };
       case 'code leaf': return { bg: 'bg-[#f5f0fb]', text: 'text-[#9b72cf]', icon: '💻' };
       case 'branch': return { bg: 'bg-[#f0f5fb]', text: 'text-[#6395d8]', icon: '📚' };
       case 'project branch': return { bg: 'bg-[#fbf5f0]', text: 'text-[#c1865a]', icon: '🌳' };
       case 'seed': return { bg: 'bg-[#fcfaf0]', text: 'text-[#d4b953]', icon: '🌼' };
       case 'fruit': return { bg: 'bg-[#fff0f0]', text: 'text-[#e57373]', icon: '🍎' };
-      case 'custom': return { bg: 'bg-white', text: 'text-gray-600', icon: '🌱' };
-      // Fallbacks for old data
-      case 'concept': return { bg: 'bg-[#f0f9f0]', text: 'text-[#5a8c64]', icon: '🍃' };
-      case 'code': return { bg: 'bg-[#f5f0fb]', text: 'text-[#9b72cf]', icon: '💻' };
-      case 'resource': return { bg: 'bg-[#f0f5fb]', text: 'text-[#6395d8]', icon: '📚' };
-      case 'project': return { bg: 'bg-[#fbf5f0]', text: 'text-[#c1865a]', icon: '🌳' };
-      case 'note': return { bg: 'bg-[#fcfaf0]', text: 'text-[#d4b953]', icon: '🌼' };
-      default: return { bg: 'bg-[#f0f9f0]', text: 'text-[#5a8c64]', icon: '🍃' }; 
+      case 'note': return { bg: 'bg-[#fcfaf0]', text: 'text-[#d4b953]', icon: '📝' };
+      default: return { bg: 'bg-[#f0f9f0]', text: 'text-[#5a8c64]', icon: '💡' }; 
     }
   };
 
@@ -184,16 +233,16 @@ const Cards = () => {
           </p>
           <div className="flex flex-wrap gap-4">
             <button 
-              onClick={() => openCreateModal('Leaf')}
+              onClick={() => openCreateModal('Concept')}
               className="flex items-center gap-2 bg-[#6b9d75] hover:bg-[#5a8c64] text-white px-6 py-3 rounded-xl font-medium transition-colors shadow-sm"
             >
-              <Plus size={20} /> Plant a New Leaf
+              <Plus size={20} /> New Concept
             </button>
             <button 
-              onClick={() => openCreateModal('Seed')}
+              onClick={() => openCreateModal('Quick Note')}
               className="flex items-center gap-2 bg-transparent border border-white/30 text-white hover:bg-white/10 px-6 py-3 rounded-xl font-medium transition-colors"
             >
-              <Zap size={20} /> Quick Seed
+              <Zap size={20} /> Quick Note
             </button>
           </div>
         </div>
@@ -208,59 +257,82 @@ const Cards = () => {
         <p className="text-gray-500 text-sm mb-6 ml-9">Different cards for different kinds of knowledge.</p>
         
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-          <div onClick={() => openCreateModal('Leaf')} className="bg-[#f0f9f0] border-2 border-[#6b9d75] rounded-2xl p-5 cursor-pointer relative hover:shadow-md transition-shadow flex flex-col justify-between">
-            <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl">🍃</div>
+          <div onClick={() => openCreateModal('Concept')} className="bg-[#f0f9f0] border-2 border-[#6b9d75] rounded-2xl p-5 cursor-pointer relative hover:shadow-md transition-shadow flex flex-col justify-between">
+            <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl">💡</div>
             <div>
-              <h3 className="font-bold text-center text-gray-900 text-sm">Leaf</h3>
-              <p className="text-center text-[#5a8c64] text-[11px] mt-1 font-medium">Concept</p>
+              <h3 className="font-bold text-center text-gray-900 text-sm">Concept</h3>
+              <p className="text-center text-[#5a8c64] text-[11px] mt-1 font-medium leading-tight">Learn a new idea</p>
             </div>
           </div>
           
-          <div onClick={() => openCreateModal('Code Leaf')} className="bg-[#f5f0fb] border border-transparent rounded-2xl p-5 cursor-pointer hover:shadow-md transition-shadow flex flex-col justify-between">
+          <div onClick={() => openCreateModal('Code')} className="bg-[#f5f0fb] border border-transparent rounded-2xl p-5 cursor-pointer hover:shadow-md transition-shadow flex flex-col justify-between">
             <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl">💻</div>
             <div>
-              <h3 className="font-bold text-center text-gray-900 text-sm">Code Leaf</h3>
-              <p className="text-center text-[#7e55af] text-[11px] mt-1 font-medium">Programming</p>
+              <h3 className="font-bold text-center text-gray-900 text-sm">Code</h3>
+              <p className="text-center text-[#7e55af] text-[11px] mt-1 font-medium leading-tight">Save code snippets & solutions</p>
             </div>
           </div>
 
-          <div onClick={() => openCreateModal('Branch')} className="bg-[#f0f5fb] border border-transparent rounded-2xl p-5 cursor-pointer hover:shadow-md transition-shadow flex flex-col justify-between">
+          <div onClick={() => openCreateModal('Resource')} className="bg-[#f0f5fb] border border-transparent rounded-2xl p-5 cursor-pointer hover:shadow-md transition-shadow flex flex-col justify-between">
             <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl">📚</div>
             <div>
-              <h3 className="font-bold text-center text-gray-900 text-sm">Branch</h3>
-              <p className="text-center text-[#4a7ebd] text-[11px] mt-1 font-medium">Resource</p>
+              <h3 className="font-bold text-center text-gray-900 text-sm">Resource</h3>
+              <p className="text-center text-[#4a7ebd] text-[11px] mt-1 font-medium leading-tight">Books, videos & articles</p>
             </div>
           </div>
 
-          <div onClick={() => openCreateModal('Project Branch')} className="bg-[#fbf5f0] border border-transparent rounded-2xl p-5 cursor-pointer hover:shadow-md transition-shadow flex flex-col justify-between">
-            <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl">🌳</div>
+          <div onClick={() => openCreateModal('Project')} className="bg-[#fbf5f0] border border-transparent rounded-2xl p-5 cursor-pointer hover:shadow-md transition-shadow flex flex-col justify-between">
+            <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl">🚀</div>
             <div>
-              <h3 className="font-bold text-center text-gray-900 text-sm">Project Branch</h3>
-              <p className="text-center text-[#a1683d] text-[11px] mt-1 font-medium">Project</p>
+              <h3 className="font-bold text-center text-gray-900 text-sm">Project</h3>
+              <p className="text-center text-[#a1683d] text-[11px] mt-1 font-medium leading-tight">Track your projects</p>
             </div>
           </div>
 
-          <div onClick={() => openCreateModal('Seed')} className="bg-[#fcfaf0] border border-transparent rounded-2xl p-5 cursor-pointer hover:shadow-md transition-shadow flex flex-col justify-between">
-            <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl">🌼</div>
+          <div onClick={() => openCreateModal('Quick Note')} className="bg-[#fcfaf0] border border-transparent rounded-2xl p-5 cursor-pointer hover:shadow-md transition-shadow flex flex-col justify-between">
+            <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl">📝</div>
             <div>
-              <h3 className="font-bold text-center text-gray-900 text-sm">Seed</h3>
-              <p className="text-center text-[#b89e35] text-[11px] mt-1 font-medium">Quick Note</p>
+              <h3 className="font-bold text-center text-gray-900 text-sm leading-tight">Quick Note</h3>
+              <p className="text-center text-[#b89e35] text-[11px] mt-1 font-medium leading-tight">Capture thoughts instantly</p>
             </div>
           </div>
           
-          <div onClick={() => openCreateModal('Fruit')} className="bg-[#fff0f0] border border-transparent rounded-2xl p-5 cursor-pointer hover:shadow-md transition-shadow flex flex-col justify-between">
-            <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl">🍎</div>
+          <div onClick={() => openCreateModal('Memory')} className="bg-[#fff0f0] border border-transparent rounded-2xl p-5 cursor-pointer hover:shadow-md transition-shadow flex flex-col justify-between">
+            <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl">🧠</div>
             <div>
-              <h3 className="font-bold text-center text-gray-900 text-sm">Fruit</h3>
-              <p className="text-center text-[#e57373] text-[11px] mt-1 font-medium">Memory</p>
+              <h3 className="font-bold text-center text-gray-900 text-sm">Memory</h3>
+              <p className="text-center text-[#e57373] text-[11px] mt-1 font-medium leading-tight">Flashcards & revision</p>
             </div>
           </div>
 
+          {/* Custom User Templates */}
+          {customTemplates.map((template, idx) => (
+            <div key={idx} className="relative group bg-white border-2 border-[#6b9d75]/30 rounded-2xl p-5 cursor-pointer hover:border-[#6b9d75] hover:shadow-md transition-all flex flex-col justify-between">
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setTemplateToDelete(template.name);
+                }}
+                className="absolute top-2 right-2 text-gray-400 hover:text-red-500 hover:bg-red-50 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                title="Delete Template"
+              >
+                <Trash2 size={16} />
+              </button>
+              <div onClick={() => openCreateModal('Custom', template)} className="flex-1 flex flex-col justify-between">
+                <div className="w-12 h-12 bg-gray-50 rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl">{template.icon || '✨'}</div>
+                <div>
+                  <h3 className="font-bold text-center text-gray-900 text-sm leading-tight">{template.name}</h3>
+                  <p className="text-center text-[#5a8c64] text-[11px] mt-1 font-medium leading-tight">Custom Template</p>
+                </div>
+              </div>
+            </div>
+          ))}
+
           <div onClick={() => openCreateModal('Custom')} className="bg-white border-2 border-dashed border-gray-200 rounded-2xl p-5 cursor-pointer hover:border-[#6b9d75] hover:bg-[#f0f9f0] transition-colors flex flex-col justify-between group">
-            <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl group-hover:bg-white">🌱</div>
+            <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl group-hover:bg-white">✨</div>
             <div>
-              <h3 className="font-bold text-center text-gray-900 text-sm leading-tight">Grow Your Own</h3>
-              <p className="text-center text-gray-400 text-[11px] mt-1 font-medium">Custom</p>
+              <h3 className="font-bold text-center text-gray-900 text-sm leading-tight">Custom</h3>
+              <p className="text-center text-gray-400 text-[11px] mt-1 font-medium leading-tight">Build your own card</p>
             </div>
           </div>
         </div>
@@ -411,17 +483,17 @@ const Cards = () => {
               const isCode = card.category?.toLowerCase() === 'code';
               
               return (
-                <div key={card.id} className={`${style.bg} rounded-3xl p-5 relative shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-black/[0.03] hover:shadow-lg transition-shadow flex flex-col group h-[320px]`}>
+                <div key={card.id} onClick={() => setViewCard(card)} className={`${style.bg} rounded-3xl p-5 relative shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-black/[0.03] hover:shadow-lg transition-shadow flex flex-col group h-[320px] cursor-pointer`}>
                   
                   {/* Actions overlay on hover */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/95 backdrop-blur-sm p-2 rounded-xl shadow-lg border border-black/5 opacity-0 group-hover:opacity-100 transition-opacity z-10 flex gap-1 pointer-events-none group-hover:pointer-events-auto">
-                    <button onClick={() => openEditModal(card)} className="p-2 text-gray-500 hover:text-[#1a472a] hover:bg-gray-100 rounded-lg transition-colors" title="Edit">
+                  <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-sm p-1.5 rounded-xl shadow-lg border border-black/5 opacity-0 group-hover:opacity-100 transition-all z-10 flex gap-1 translate-y-2 group-hover:translate-y-0 pointer-events-none group-hover:pointer-events-auto">
+                    <button onClick={(e) => { e.stopPropagation(); openEditModal(card); }} className="p-2 text-gray-500 hover:text-[#1a472a] hover:bg-gray-100 rounded-lg transition-colors" title="Edit">
                       <Edit2 size={16} />
                     </button>
-                    <button onClick={() => handleAction('duplicate', card.id)} className="p-2 text-gray-500 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-colors" title="Duplicate">
+                    <button onClick={(e) => { e.stopPropagation(); handleAction('duplicate', card.id); }} className="p-2 text-gray-500 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-colors" title="Duplicate">
                       <Copy size={16} />
                     </button>
-                    <button onClick={() => handleAction('delete', card.id)} className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
+                    <button onClick={(e) => { e.stopPropagation(); handleAction('delete', card.id); }} className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
                       <Trash2 size={16} />
                     </button>
                   </div>
@@ -431,7 +503,7 @@ const Cards = () => {
                       {card.category || 'Leaf'}
                     </span>
                     <button 
-                      onClick={() => handleAction('favorite', card.id)}
+                      onClick={(e) => { e.stopPropagation(); handleAction('favorite', card.id); }}
                       className={`transition-colors ${card.isFavorite ? 'text-yellow-500' : 'text-gray-400 hover:text-gray-700'}`}
                     >
                       <Bookmark size={18} className={card.isFavorite ? 'fill-yellow-500' : ''} />
@@ -485,7 +557,7 @@ const Cards = () => {
       {/* Footer Banner */}
       <div className="mt-4 bg-[#eaf4ed] rounded-3xl p-6 md:p-8 flex flex-col sm:flex-row items-center justify-between border border-[#d3ebd9]">
         <div className="flex items-center gap-4 mb-4 sm:mb-0">
-          <div className="text-4xl bg-white p-3 rounded-2xl shadow-sm">🪴</div>
+          <div className="text-4xl bg-white p-3 rounded-2xl shadow-sm">🌿</div>
           <div>
             <h4 className="font-bold text-[#1f4a2c] text-lg">Every card you create is a leaf on your tree.</h4>
             <p className="text-[#3b6b4b] text-sm mt-0.5 font-medium">Keep learning, keep growing! 🌲</p>
@@ -498,13 +570,108 @@ const Cards = () => {
         </div>
       </div>
 
+      <CardViewModal
+        isOpen={!!viewCard}
+        card={viewCard}
+        onClose={() => setViewCard(null)}
+        onEdit={(c) => {
+          setViewCard(null);
+          openEditModal(c);
+        }}
+      />
+
       <CardModal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
         cardToEdit={cardToEdit}
         initialCategory={initialCategory}
-        onSave={fetchCards} 
+        initialSchema={initialSchema}
+        onSave={() => {
+          fetchCards();
+          setToastMessage('🌿 Your knowledge has grown!');
+          setTimeout(() => setToastMessage(''), 3500);
+        }} 
       />
+
+      {/* Delete Confirmation Modal */}
+      {deleteModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+            <div className="p-6">
+              <div className="flex justify-center mb-4">
+                <div className="bg-red-100 p-3 rounded-full text-red-600">
+                  <Trash2 size={32} />
+                </div>
+              </div>
+              <h3 className="text-xl font-bold text-center text-gray-900 mb-2">Delete Card?</h3>
+              <p className="text-center text-gray-500 mb-6">
+                Are you sure you want to delete this card? This action is permanent and cannot be undone.
+              </p>
+              <div className="flex gap-3">
+                <button 
+                  onClick={() => { setDeleteModalOpen(false); setCardToDelete(null); }}
+                  disabled={isDeleting}
+                  className="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-colors disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={confirmDelete}
+                  disabled={isDeleting}
+                  className="flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition-colors flex justify-center items-center gap-2 disabled:opacity-50"
+                >
+                  {isDeleting ? 'Deleting...' : 'Delete Card'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Template Delete Confirmation Modal */}
+      {templateToDelete && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+            <div className="p-6">
+              <div className="flex justify-center mb-4">
+                <div className="bg-red-100 p-3 rounded-full text-red-600">
+                  <Trash2 size={32} />
+                </div>
+              </div>
+              <h3 className="text-xl font-bold text-center text-gray-900 mb-2">Delete Template?</h3>
+              <p className="text-center text-gray-500 mb-6">
+                Are you sure you want to remove the template "{templateToDelete}"? Existing cards using this template will not be affected.
+              </p>
+              <div className="flex gap-3">
+                <button 
+                  onClick={() => setTemplateToDelete(null)}
+                  className="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={() => {
+                    const newHidden = [...hiddenTemplates, templateToDelete];
+                    setHiddenTemplates(newHidden);
+                    localStorage.setItem('hiddenTemplates', JSON.stringify(newHidden));
+                    setTemplateToDelete(null);
+                  }}
+                  className="flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition-colors flex justify-center items-center gap-2"
+                >
+                  Delete Template
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-[200] bg-[#1a472a] text-white px-6 py-4 rounded-2xl shadow-xl flex items-center gap-3 animate-in slide-in-from-bottom-5 fade-in duration-300">
+          <span className="font-semibold text-[15px]">{toastMessage}</span>
+        </div>
+      )}
     </div>
   );
 };

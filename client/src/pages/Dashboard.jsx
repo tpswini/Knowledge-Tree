@@ -60,7 +60,7 @@ const Dashboard = () => {
       {/* Header & Motivational Summary */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Welcome back, {userData.name.split(' ')[0]}! 👋</h1>
+          <h1 className="text-2xl font-bold text-gray-900">🌳 Welcome back, {userData.name.split(' ')[0]}! Let's grow your knowledge today.</h1>
           <p className="text-gray-500 text-sm mt-1">{motivationalSummary}</p>
         </div>
         <div className="flex gap-2">
@@ -68,7 +68,7 @@ const Dashboard = () => {
             Log Journal
           </Link>
           <Link to="/cards" className="flex items-center gap-2 bg-[#1a472a] hover:bg-[#1a472a]/90 text-white px-5 py-2.5 rounded-xl font-medium transition-colors shadow-sm text-sm">
-            <Plus size={18} /> New Card
+            <Plus size={18} /> 🌱 Plant New Knowledge
           </Link>
         </div>
       </div>
@@ -112,7 +112,7 @@ const Dashboard = () => {
             <Flame size={20} fill="currentColor" />
           </div>
           <span className="text-2xl font-bold text-gray-900">{userData.learningStreak}</span>
-          <span className="text-xs font-medium text-gray-500 uppercase tracking-wide mt-1">Day Streak</span>
+          <span className="text-xs font-medium text-gray-500 uppercase tracking-wide mt-1">🔥 Growing Streak</span>
         </div>
 
         <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-center items-center text-center hover:border-[#1a472a]/20 transition-colors">
@@ -124,7 +124,18 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Main Charts Row */}
+      {stats.totalCards === 0 ? (
+        <div className="bg-[#eaf4ed] p-10 rounded-3xl border border-[#d3ebd9] text-center shadow-sm flex flex-col items-center justify-center my-8">
+          <div className="text-6xl mb-4">🌱</div>
+          <h2 className="text-2xl font-bold text-[#1f4a2c] mb-2">Your tree is waiting.</h2>
+          <p className="text-[#3b6b4b] mb-8 font-medium">Plant your first piece of knowledge.</p>
+          <Link to="/cards" className="inline-flex items-center gap-2 bg-[#1a472a] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#1a472a]/90 transition-colors shadow-sm">
+            <Plus size={20} /> Plant New Knowledge
+          </Link>
+        </div>
+      ) : (
+        <>
+          {/* Main Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* Line Chart: 30 Day Activity Trend */}
@@ -230,6 +241,8 @@ const Dashboard = () => {
           />
         </div>
       </div>
+      </>
+      )}
 
     </div>
   );

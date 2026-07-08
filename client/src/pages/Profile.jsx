@@ -157,7 +157,7 @@ const Profile = () => {
             </div>
             <div className="bg-orange-50 p-4 rounded-2xl">
               <span className="block text-2xl font-bold text-orange-600">{user?.learningStreak || 0}</span>
-              <span className="text-xs text-orange-600/70 uppercase tracking-wide">Day Streak</span>
+              <span className="text-xs text-orange-600/70 uppercase tracking-wide">🔥 Growing Streak</span>
             </div>
           </div>
         </div>

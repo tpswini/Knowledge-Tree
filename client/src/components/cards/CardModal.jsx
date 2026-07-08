@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { X, Save, Loader2, Plus, Trash2, Settings, Type, AlignLeft, List, CheckSquare, Calendar, Hash, Link as LinkIcon, Image, Star, Code, Edit3 } from 'lucide-react';
 
-const CARD_SCHEMAS = {
-  'Leaf': {
-    icon: '🍃',
-    name: 'Leaf (Concept)',
+export const CARD_SCHEMAS = {
+  'Concept': {
+    icon: '💡',
+    name: 'Concept',
     fields: [
       { name: 'title', label: 'Title', type: 'text', required: true, isBase: true },
       { name: 'explanation', label: 'Explain in your own words', type: 'textarea', required: true, isBase: true },
@@ -21,9 +21,9 @@ const CARD_SCHEMAS = {
       { name: 'notes', label: 'Notes', type: 'textarea' },
     ]
   },
-  'Code Leaf': {
+  'Code': {
     icon: '💻',
-    name: 'Code Leaf (Programming)',
+    name: 'Code',
     fields: [
       { name: 'title', label: 'Title', type: 'text', required: true, isBase: true },
       { name: 'language', label: 'Programming Language', type: 'text', required: true },
@@ -39,9 +39,9 @@ const CARD_SCHEMAS = {
       { name: 'timeSpent', label: 'Time Spent (mins)', type: 'number', isBase: true },
     ]
   },
-  'Branch': {
+  'Resource': {
     icon: '📚',
-    name: 'Branch (Resource)',
+    name: 'Resource',
     fields: [
       { name: 'title', label: 'Title', type: 'text', required: true, isBase: true },
       { name: 'resourceType', label: 'Resource Type', type: 'select', options: ['Book', 'YouTube', 'Course', 'Documentation', 'Website'] },
@@ -55,9 +55,9 @@ const CARD_SCHEMAS = {
       { name: 'completed', label: 'Completed', type: 'checkbox' },
     ]
   },
-  'Project Branch': {
-    icon: '🌳',
-    name: 'Project Branch',
+  'Project': {
+    icon: '🚀',
+    name: 'Project',
     fields: [
       { name: 'title', label: 'Project Name', type: 'text', required: true, isBase: true },
       { name: 'explanation', label: 'Description', type: 'textarea', isBase: true },
@@ -73,9 +73,9 @@ const CARD_SCHEMAS = {
       { name: 'timeInvested', label: 'Time Invested', type: 'text' },
     ]
   },
-  'Seed': {
-    icon: '🌼',
-    name: 'Seed (Note)',
+  'Quick Note': {
+    icon: '📝',
+    name: 'Quick Note',
     fields: [
       { name: 'title', label: 'Title', type: 'text', required: true, isBase: true },
       { name: 'explanation', label: 'Quick Note', type: 'textarea', isBase: true },
@@ -84,9 +84,9 @@ const CARD_SCHEMAS = {
       { name: 'pin', label: 'Pin Note', type: 'checkbox' }
     ]
   },
-  'Fruit': {
-    icon: '🍎',
-    name: 'Fruit (Memory)',
+  'Memory': {
+    icon: '🧠',
+    name: 'Memory',
     fields: [
       { name: 'title', label: 'Question', type: 'text', required: true, isBase: true },
       { name: 'explanation', label: 'Answer', type: 'textarea', isBase: true },
@@ -108,7 +108,7 @@ const FIELD_TYPES = [
   { id: 'markdown', label: 'Markdown', icon: Edit3 }
 ];
 
-const CardModal = ({ isOpen, onClose, cardToEdit, initialCategory, onSave }) => {
+const CardModal = ({ isOpen, onClose, cardToEdit, initialCategory, initialSchema, onSave }) => {
   const [activeCategory, setActiveCategory] = useState(initialCategory || 'Leaf');
   const [formData, setFormData] = useState({ title: '', explanation: '' });
   const [contentData, setContentData] = useState({});
@@ -147,15 +147,20 @@ const CardModal = ({ isOpen, onClose, cardToEdit, initialCategory, onSave }) => 
         setFormData({ title: '', explanation: '' });
         setContentData({});
         if (initialCategory === 'Custom') {
-          setIsBuilderMode(true);
-          setCustomSchema({ name: '', icon: '🌱', color: 'White', fields: [] });
+          if (initialSchema) {
+            setIsBuilderMode(false);
+            setCustomSchema(initialSchema);
+          } else {
+            setIsBuilderMode(true);
+            setCustomSchema({ name: '', icon: '🌱', color: 'White', fields: [] });
+          }
         } else {
           setIsBuilderMode(false);
         }
       }
       setError('');
     }
-  }, [cardToEdit, isOpen, initialCategory]);
+  }, [cardToEdit, isOpen, initialCategory, initialSchema]);
 
   if (!isOpen) return null;
 

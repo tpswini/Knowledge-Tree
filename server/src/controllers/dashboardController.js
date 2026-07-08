@@ -102,7 +102,15 @@ exports.getDashboardSummary = async (req, res) => {
       });
     }
 
-    const motivationalSummary = `You are on a ${user.learningStreak} day learning streak! Keep up the great work. You've mastered ${user.xp} XP so far and you're well on your way to Level ${user.level + 1}.`;
+    // Calculate cards added this month
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+    const cardsThisMonth = cards.filter(c => {
+      const d = new Date(c.createdAt);
+      return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+    }).length;
+
+    const motivationalSummary = `🌳 Your tree grew by ${cardsThisMonth} new concepts this month.`;
 
     // Sort cards descending for recent widget
     const recentCards = [...cards].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5);

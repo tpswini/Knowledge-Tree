@@ -88,3 +88,28 @@ exports.getUserDetails = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+exports.deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = parseInt(id, 10);
+    
+    if (isNaN(userId)) {
+        return res.status(400).json({ message: 'Invalid user ID' });
+    }
+
+    // Since onDelete: Cascade is configured in the schema,
+    // deleting the user will also delete their cards, journals, and goals.
+    await prisma.user.delete({
+      where: { id: userId }
+    });
+
+    res.status(200).json({ message: 'User deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    if (error.code === 'P2025') {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};

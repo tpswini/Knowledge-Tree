@@ -189,6 +189,7 @@ exports.resetPassword = async (req, res) => {
     res.status(200).json({ message: 'Password reset successfully' });
   } catch (error) {
     console.error('Reset password error:', error);
+    console.error('Token received:', req.body.token);
     if (error.name === 'TokenExpiredError') {
       return res.status(400).json({ message: 'Token expired' });
     }

@@ -46,7 +46,7 @@ const Login = () => {
           <h2 className="text-5xl font-bold mb-6 leading-tight">Welcome back to your forest.</h2>
           <p className="text-emerald-100 text-lg mb-8 opacity-90">Every card you study adds a leaf to your tree. Watch your knowledge grow as you water it every day.</p>
           <div className="flex gap-4 items-center bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-white/10 w-fit">
-             <div className="text-4xl">🪴</div>
+             <div className="text-4xl">🔥</div>
              <div>
                 <p className="font-bold text-lg">Daily Streak</p>
                 <p className="text-emerald-200 text-sm">Log in daily to earn bonus XP!</p>
