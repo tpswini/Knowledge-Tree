@@ -4,7 +4,7 @@ import { X, Save, Loader2, Plus, Trash2, Settings, Type, AlignLeft, List, CheckS
 
 export const CARD_SCHEMAS = {
   'Concept': {
-    icon: '💡',
+    icon: '',
     name: 'Concept',
     fields: [
       { name: 'title', label: 'Title', type: 'text', required: true, isBase: true },
@@ -22,7 +22,7 @@ export const CARD_SCHEMAS = {
     ]
   },
   'Code': {
-    icon: '💻',
+    icon: '',
     name: 'Code',
     fields: [
       { name: 'title', label: 'Title', type: 'text', required: true, isBase: true },
@@ -40,7 +40,7 @@ export const CARD_SCHEMAS = {
     ]
   },
   'Resource': {
-    icon: '📚',
+    icon: '',
     name: 'Resource',
     fields: [
       { name: 'title', label: 'Title', type: 'text', required: true, isBase: true },
@@ -56,7 +56,7 @@ export const CARD_SCHEMAS = {
     ]
   },
   'Project': {
-    icon: '🚀',
+    icon: '',
     name: 'Project',
     fields: [
       { name: 'title', label: 'Project Name', type: 'text', required: true, isBase: true },
@@ -74,7 +74,7 @@ export const CARD_SCHEMAS = {
     ]
   },
   'Quick Note': {
-    icon: '📝',
+    icon: '',
     name: 'Quick Note',
     fields: [
       { name: 'title', label: 'Title', type: 'text', required: true, isBase: true },
@@ -85,7 +85,7 @@ export const CARD_SCHEMAS = {
     ]
   },
   'Memory': {
-    icon: '🧠',
+    icon: '',
     name: 'Memory',
     fields: [
       { name: 'title', label: 'Question', type: 'text', required: true, isBase: true },
@@ -117,7 +117,7 @@ const CardModal = ({ isOpen, onClose, cardToEdit, initialCategory, initialSchema
 
   // Custom Builder State
   const [isBuilderMode, setIsBuilderMode] = useState(false);
-  const [customSchema, setCustomSchema] = useState({ name: '', icon: '🌱', color: 'White', fields: [] });
+  const [customSchema, setCustomSchema] = useState({ name: '', icon: '', color: 'White', fields: [] });
   const [showFieldPicker, setShowFieldPicker] = useState(false);
 
   useEffect(() => {
@@ -152,7 +152,7 @@ const CardModal = ({ isOpen, onClose, cardToEdit, initialCategory, initialSchema
             setCustomSchema(initialSchema);
           } else {
             setIsBuilderMode(true);
-            setCustomSchema({ name: '', icon: '🌱', color: 'White', fields: [] });
+            setCustomSchema({ name: '', icon: '', color: 'White', fields: [] });
           }
         } else {
           setIsBuilderMode(false);
@@ -318,7 +318,7 @@ const CardModal = ({ isOpen, onClose, cardToEdit, initialCategory, initialSchema
         <div className="flex items-center justify-between p-5 border-b border-gray-100 bg-gray-50/50 rounded-t-2xl">
           <div className="flex items-center gap-3">
             <div className="text-2xl bg-white w-10 h-10 rounded-xl flex items-center justify-center shadow-sm border border-gray-100">
-              {schema?.icon || '🌱'}
+              {schema?.icon || ''}
             </div>
             <div>
               <h2 className="text-xl font-bold text-gray-900 leading-tight">

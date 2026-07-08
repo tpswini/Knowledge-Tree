@@ -71,7 +71,7 @@ const AdminDashboard = () => {
                   </td>
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-2 text-xs">
-                       <span className="bg-orange-100 text-orange-700 py-0.5 px-2 rounded-full font-medium">🔥 {user.learningStreak} days</span>
+                       <span className="bg-orange-100 text-orange-700 py-0.5 px-2 rounded-full font-medium"> {user.learningStreak} days</span>
                     </div>
                     <div className="text-xs mt-1 text-gray-400">
                        Last active: {user.lastActiveDate ? new Date(user.lastActiveDate).toLocaleDateString() : 'Never'}

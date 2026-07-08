@@ -79,7 +79,7 @@ const Revision = () => {
         <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mb-6 text-[#1a472a]">
           <Trophy size={40} />
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">🍃 One more leaf strengthened!</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2"> One more leaf strengthened!</h1>
         <p className="text-gray-500 mb-8">You revised {queue.length} cards today.</p>
         
         <div className="grid grid-cols-2 gap-4 w-full mb-8">

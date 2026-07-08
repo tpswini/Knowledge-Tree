@@ -94,7 +94,7 @@ const CardViewModal = ({ isOpen, onClose, card, onEdit }) => {
   };
 
   const style = getStyle();
-  const icon = card.content?.icon || schema?.icon || '💡';
+  const icon = card.content?.icon || schema?.icon || '';
   
   // Sort keys so title, explanation come first, and textareas come last
   const getSortedEntries = () => {

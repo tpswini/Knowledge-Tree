@@ -196,22 +196,22 @@ const Cards = () => {
 
   const getCardStyle = (category) => {
     switch(category?.toLowerCase()) {
-      case 'concept': return { bg: 'bg-[#f0f9f0]', text: 'text-[#5a8c64]', icon: '💡' };
-      case 'code': return { bg: 'bg-[#f5f0fb]', text: 'text-[#9b72cf]', icon: '💻' };
-      case 'resource': return { bg: 'bg-[#f0f5fb]', text: 'text-[#6395d8]', icon: '📚' };
-      case 'project': return { bg: 'bg-[#fbf5f0]', text: 'text-[#c1865a]', icon: '🚀' };
-      case 'quick note': return { bg: 'bg-[#fcfaf0]', text: 'text-[#d4b953]', icon: '📝' };
-      case 'memory': return { bg: 'bg-[#fff0f0]', text: 'text-[#e57373]', icon: '🧠' };
-      case 'custom': return { bg: 'bg-white', text: 'text-gray-600', icon: '✨' };
+      case 'concept': return { bg: 'bg-[#f0f9f0]', text: 'text-[#5a8c64]', icon: '' };
+      case 'code': return { bg: 'bg-[#f5f0fb]', text: 'text-[#9b72cf]', icon: '' };
+      case 'resource': return { bg: 'bg-[#f0f5fb]', text: 'text-[#6395d8]', icon: '' };
+      case 'project': return { bg: 'bg-[#fbf5f0]', text: 'text-[#c1865a]', icon: '' };
+      case 'quick note': return { bg: 'bg-[#fcfaf0]', text: 'text-[#d4b953]', icon: '' };
+      case 'memory': return { bg: 'bg-[#fff0f0]', text: 'text-[#e57373]', icon: '' };
+      case 'custom': return { bg: 'bg-white', text: 'text-gray-600', icon: '' };
       // Fallbacks for old data
-      case 'leaf': return { bg: 'bg-[#f0f9f0]', text: 'text-[#5a8c64]', icon: '🍃' };
-      case 'code leaf': return { bg: 'bg-[#f5f0fb]', text: 'text-[#9b72cf]', icon: '💻' };
-      case 'branch': return { bg: 'bg-[#f0f5fb]', text: 'text-[#6395d8]', icon: '📚' };
-      case 'project branch': return { bg: 'bg-[#fbf5f0]', text: 'text-[#c1865a]', icon: '🌳' };
-      case 'seed': return { bg: 'bg-[#fcfaf0]', text: 'text-[#d4b953]', icon: '🌼' };
-      case 'fruit': return { bg: 'bg-[#fff0f0]', text: 'text-[#e57373]', icon: '🍎' };
-      case 'note': return { bg: 'bg-[#fcfaf0]', text: 'text-[#d4b953]', icon: '📝' };
-      default: return { bg: 'bg-[#f0f9f0]', text: 'text-[#5a8c64]', icon: '💡' }; 
+      case 'leaf': return { bg: 'bg-[#f0f9f0]', text: 'text-[#5a8c64]', icon: '' };
+      case 'code leaf': return { bg: 'bg-[#f5f0fb]', text: 'text-[#9b72cf]', icon: '' };
+      case 'branch': return { bg: 'bg-[#f0f5fb]', text: 'text-[#6395d8]', icon: '' };
+      case 'project branch': return { bg: 'bg-[#fbf5f0]', text: 'text-[#c1865a]', icon: '' };
+      case 'seed': return { bg: 'bg-[#fcfaf0]', text: 'text-[#d4b953]', icon: '' };
+      case 'fruit': return { bg: 'bg-[#fff0f0]', text: 'text-[#e57373]', icon: '' };
+      case 'note': return { bg: 'bg-[#fcfaf0]', text: 'text-[#d4b953]', icon: '' };
+      default: return { bg: 'bg-[#f0f9f0]', text: 'text-[#5a8c64]', icon: '' }; 
     }
   };
 
@@ -226,7 +226,7 @@ const Cards = () => {
         </div>
         <div className="relative z-10 p-8 md:p-12">
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-2 flex items-center gap-3">
-            What did you learn today? <span className="text-2xl">🌱</span>
+            What did you learn today? <span className="text-2xl"></span>
           </h1>
           <p className="text-gray-200 mb-8 max-w-lg text-lg">
             Capture a lesson, create a memory, grow your tree.
@@ -258,7 +258,7 @@ const Cards = () => {
         
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
           <div onClick={() => openCreateModal('Concept')} className="bg-[#f0f9f0] border-2 border-[#6b9d75] rounded-2xl p-5 cursor-pointer relative hover:shadow-md transition-shadow flex flex-col justify-between">
-            <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl">💡</div>
+            <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl"></div>
             <div>
               <h3 className="font-bold text-center text-gray-900 text-sm">Concept</h3>
               <p className="text-center text-[#5a8c64] text-[11px] mt-1 font-medium leading-tight">Learn a new idea</p>
@@ -266,7 +266,7 @@ const Cards = () => {
           </div>
           
           <div onClick={() => openCreateModal('Code')} className="bg-[#f5f0fb] border border-transparent rounded-2xl p-5 cursor-pointer hover:shadow-md transition-shadow flex flex-col justify-between">
-            <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl">💻</div>
+            <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl"></div>
             <div>
               <h3 className="font-bold text-center text-gray-900 text-sm">Code</h3>
               <p className="text-center text-[#7e55af] text-[11px] mt-1 font-medium leading-tight">Save code snippets & solutions</p>
@@ -274,7 +274,7 @@ const Cards = () => {
           </div>
 
           <div onClick={() => openCreateModal('Resource')} className="bg-[#f0f5fb] border border-transparent rounded-2xl p-5 cursor-pointer hover:shadow-md transition-shadow flex flex-col justify-between">
-            <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl">📚</div>
+            <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl"></div>
             <div>
               <h3 className="font-bold text-center text-gray-900 text-sm">Resource</h3>
               <p className="text-center text-[#4a7ebd] text-[11px] mt-1 font-medium leading-tight">Books, videos & articles</p>
@@ -282,7 +282,7 @@ const Cards = () => {
           </div>
 
           <div onClick={() => openCreateModal('Project')} className="bg-[#fbf5f0] border border-transparent rounded-2xl p-5 cursor-pointer hover:shadow-md transition-shadow flex flex-col justify-between">
-            <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl">🚀</div>
+            <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl"></div>
             <div>
               <h3 className="font-bold text-center text-gray-900 text-sm">Project</h3>
               <p className="text-center text-[#a1683d] text-[11px] mt-1 font-medium leading-tight">Track your projects</p>
@@ -290,7 +290,7 @@ const Cards = () => {
           </div>
 
           <div onClick={() => openCreateModal('Quick Note')} className="bg-[#fcfaf0] border border-transparent rounded-2xl p-5 cursor-pointer hover:shadow-md transition-shadow flex flex-col justify-between">
-            <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl">📝</div>
+            <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl"></div>
             <div>
               <h3 className="font-bold text-center text-gray-900 text-sm leading-tight">Quick Note</h3>
               <p className="text-center text-[#b89e35] text-[11px] mt-1 font-medium leading-tight">Capture thoughts instantly</p>
@@ -298,7 +298,7 @@ const Cards = () => {
           </div>
           
           <div onClick={() => openCreateModal('Memory')} className="bg-[#fff0f0] border border-transparent rounded-2xl p-5 cursor-pointer hover:shadow-md transition-shadow flex flex-col justify-between">
-            <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl">🧠</div>
+            <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl"></div>
             <div>
               <h3 className="font-bold text-center text-gray-900 text-sm">Memory</h3>
               <p className="text-center text-[#e57373] text-[11px] mt-1 font-medium leading-tight">Flashcards & revision</p>
@@ -319,7 +319,7 @@ const Cards = () => {
                 <Trash2 size={16} />
               </button>
               <div onClick={() => openCreateModal('Custom', template)} className="flex-1 flex flex-col justify-between">
-                <div className="w-12 h-12 bg-gray-50 rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl">{template.icon || '✨'}</div>
+                <div className="w-12 h-12 bg-gray-50 rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl">{template.icon || ''}</div>
                 <div>
                   <h3 className="font-bold text-center text-gray-900 text-sm leading-tight">{template.name}</h3>
                   <p className="text-center text-[#5a8c64] text-[11px] mt-1 font-medium leading-tight">Custom Template</p>
@@ -329,7 +329,7 @@ const Cards = () => {
           ))}
 
           <div onClick={() => openCreateModal('Custom')} className="bg-white border-2 border-dashed border-gray-200 rounded-2xl p-5 cursor-pointer hover:border-[#6b9d75] hover:bg-[#f0f9f0] transition-colors flex flex-col justify-between group">
-            <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl group-hover:bg-white">✨</div>
+            <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-xl shadow-sm flex items-center justify-center mb-3 mx-auto text-2xl group-hover:bg-white"></div>
             <div>
               <h3 className="font-bold text-center text-gray-900 text-sm leading-tight">Custom</h3>
               <p className="text-center text-gray-400 text-[11px] mt-1 font-medium leading-tight">Build your own card</p>
@@ -557,16 +557,16 @@ const Cards = () => {
       {/* Footer Banner */}
       <div className="mt-4 bg-[#eaf4ed] rounded-3xl p-6 md:p-8 flex flex-col sm:flex-row items-center justify-between border border-[#d3ebd9]">
         <div className="flex items-center gap-4 mb-4 sm:mb-0">
-          <div className="text-4xl bg-white p-3 rounded-2xl shadow-sm">🌿</div>
+          <div className="text-4xl bg-white p-3 rounded-2xl shadow-sm"></div>
           <div>
             <h4 className="font-bold text-[#1f4a2c] text-lg">Every card you create is a leaf on your tree.</h4>
-            <p className="text-[#3b6b4b] text-sm mt-0.5 font-medium">Keep learning, keep growing! 🌲</p>
+            <p className="text-[#3b6b4b] text-sm mt-0.5 font-medium">Keep learning, keep growing! </p>
           </div>
         </div>
         <div className="flex items-end gap-3 opacity-90 drop-shadow-sm">
-          <div className="text-3xl translate-y-2">🌱</div>
-          <div className="text-4xl">📖</div>
-          <div className="text-3xl translate-y-1">🍵</div>
+          <div className="text-3xl translate-y-2"></div>
+          <div className="text-4xl"></div>
+          <div className="text-3xl translate-y-1"></div>
         </div>
       </div>
 
@@ -588,7 +588,7 @@ const Cards = () => {
         initialSchema={initialSchema}
         onSave={() => {
           fetchCards();
-          setToastMessage('🌿 Your knowledge has grown!');
+          setToastMessage(' Your knowledge has grown!');
           setTimeout(() => setToastMessage(''), 3500);
         }} 
       />

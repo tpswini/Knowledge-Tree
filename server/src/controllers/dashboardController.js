@@ -110,7 +110,7 @@ exports.getDashboardSummary = async (req, res) => {
       return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
     }).length;
 
-    const motivationalSummary = `🌳 Your tree grew by ${cardsThisMonth} new concepts this month.`;
+    const motivationalSummary = ` Your tree grew by ${cardsThisMonth} new concepts this month.`;
 
     // Sort cards descending for recent widget
     const recentCards = [...cards].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5);

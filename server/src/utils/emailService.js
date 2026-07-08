@@ -53,7 +53,7 @@ const sendVerificationEmail = async (toEmail, verificationToken, clientUrl) => {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
           <h2 style="color: #1a472a; text-align: center;">Knowledge Tree</h2>
-          <h3 style="color: #333;">Welcome to the forest! 🌱</h3>
+          <h3 style="color: #333;">Welcome to the forest! </h3>
           <p style="color: #555; line-height: 1.5;">
             We're excited to have you. Please enter the following 6-digit code to verify your email address and activate your account.
           </p>

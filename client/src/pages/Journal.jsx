@@ -112,10 +112,10 @@ const Journal = () => {
                   {new Date(journal.date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
                 </div>
                 <span className="text-2xl" title="Mood">{
-                  journal.mood === 'Happy' ? '😊' : 
-                  journal.mood === 'Neutral' ? '😐' : 
-                  journal.mood === 'Sad' ? '😔' : 
-                  journal.mood === 'Frustrated' ? '😤' : '💡'
+                  journal.mood === 'Happy' ? '' : 
+                  journal.mood === 'Neutral' ? '' : 
+                  journal.mood === 'Sad' ? '' : 
+                  journal.mood === 'Frustrated' ? '' : ''
                 }</span>
               </div>
               
@@ -205,11 +205,11 @@ const Journal = () => {
                   onChange={(e) => setFormData({...formData, mood: e.target.value})}
                   className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1a472a]/20 focus:border-[#1a472a]"
                 >
-                  <option value="Happy">Happy 😊</option>
-                  <option value="Neutral">Neutral 😐</option>
-                  <option value="Frustrated">Frustrated 😤</option>
-                  <option value="Sad">Sad 😔</option>
-                  <option value="Inspired">Inspired 💡</option>
+                  <option value="Happy">Happy </option>
+                  <option value="Neutral">Neutral </option>
+                  <option value="Frustrated">Frustrated </option>
+                  <option value="Sad">Sad </option>
+                  <option value="Inspired">Inspired </option>
                 </select>
               </div>
             </form>
@@ -233,10 +233,10 @@ const Journal = () => {
             <div className="flex items-center justify-between p-5 border-b border-gray-100">
               <div className="flex items-center gap-3">
                 <span className="text-3xl">{
-                  selectedJournal.mood === 'Happy' ? '😊' : 
-                  selectedJournal.mood === 'Neutral' ? '😐' : 
-                  selectedJournal.mood === 'Sad' ? '😔' : 
-                  selectedJournal.mood === 'Frustrated' ? '😤' : '💡'
+                  selectedJournal.mood === 'Happy' ? '' : 
+                  selectedJournal.mood === 'Neutral' ? '' : 
+                  selectedJournal.mood === 'Sad' ? '' : 
+                  selectedJournal.mood === 'Frustrated' ? '' : ''
                 }</span>
                 <div>
                   <h2 className="font-bold text-gray-900">Journal Entry</h2>

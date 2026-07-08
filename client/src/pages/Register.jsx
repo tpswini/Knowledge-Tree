@@ -48,7 +48,7 @@ const Register = () => {
           <h2 className="text-5xl font-bold mb-6 leading-tight">Start growing your knowledge today.</h2>
           <p className="text-emerald-100 text-lg mb-8 opacity-90">Join thousands of lifelong learners who are organizing their minds and achieving their goals.</p>
           <div className="flex gap-4 items-center bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-white/10 w-fit">
-             <div className="text-4xl">🌱</div>
+             <div className="text-4xl"></div>
              <div>
                 <p className="font-bold text-lg">Level 1: Seed</p>
                 <p className="text-emerald-200 text-sm">Start your journey and earn XP!</p>
