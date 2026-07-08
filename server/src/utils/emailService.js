@@ -1,37 +1,10 @@
-const nodemailer = require('nodemailer');
+const axios = require('axios');
 
 const sendPasswordResetEmail = async (toEmail, resetToken, clientUrl) => {
   try {
-    const dns = require('dns');
-    const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
-    
-    // Explicitly resolve the IPv4 address of the SMTP host to bypass Render's IPv6 routing bugs
-    const ipv4Host = await new Promise((resolve) => {
-      dns.lookup(smtpHost, 4, (err, address) => {
-        if (err || !address) resolve(smtpHost);
-        else resolve(address);
-      });
-    });
-
-    // Create a transporter using SMTP
-    const transporter = nodemailer.createTransport({
-      host: ipv4Host,
-      port: process.env.SMTP_PORT || 587,
-      secure: process.env.SMTP_PORT == 465, // true for 465, false for other ports
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-      tls: {
-        // do not fail on invalid certs
-        rejectUnauthorized: false
-      }
-    });
-
     const resetLink = `${clientUrl}/reset-password/${resetToken}`;
 
     const mailOptions = {
-      from: `"Knowledge Tree" <${process.env.SMTP_USER}>`,
       to: toEmail,
       subject: 'Password Reset Request - Knowledge Tree',
       html: `
@@ -49,20 +22,26 @@ const sendPasswordResetEmail = async (toEmail, resetToken, clientUrl) => {
           <p style="color: #777; font-size: 12px; margin-top: 30px; text-align: center;">
             If you did not request a password reset, please ignore this email.
           </p>
-          <p style="color: #777; font-size: 12px; text-align: center;">
-            Alternatively, copy and paste this link in your browser: <br/>
-            <a href="${resetLink}" style="color: #1a472a;">${resetLink}</a>
-          </p>
         </div>
       `,
     };
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log(`Password reset email sent to ${toEmail}: ${info.messageId}`);
+    if (!process.env.GMAIL_WEBHOOK_URL) {
+      console.error('ERROR: GMAIL_WEBHOOK_URL is not defined in .env');
+      return { success: false, error: 'Email service is not configured.' };
+    }
+
+    await axios.post(process.env.GMAIL_WEBHOOK_URL, {
+      to: mailOptions.to,
+      subject: mailOptions.subject,
+      html: mailOptions.html
+    });
+    
+    console.log(`Password reset email sent to ${toEmail} via Webhook`);
     return { success: true };
   } catch (error) {
-    console.error('Error sending password reset email:', error);
-    return { success: false, error: error.message || 'Configuration error' };
+    console.error('Error sending password reset email via webhook:', error);
+    return { success: false, error: error.message || 'Failed to send email' };
   }
 };
 
