@@ -2,9 +2,20 @@ const nodemailer = require('nodemailer');
 
 const sendPasswordResetEmail = async (toEmail, resetToken, clientUrl) => {
   try {
+    const dns = require('dns');
+    const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
+    
+    // Explicitly resolve the IPv4 address of the SMTP host to bypass Render's IPv6 routing bugs
+    const ipv4Host = await new Promise((resolve) => {
+      dns.lookup(smtpHost, 4, (err, address) => {
+        if (err || !address) resolve(smtpHost);
+        else resolve(address);
+      });
+    });
+
     // Create a transporter using SMTP
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
+      host: ipv4Host,
       port: process.env.SMTP_PORT || 587,
       secure: process.env.SMTP_PORT == 465, // true for 465, false for other ports
       auth: {
@@ -14,9 +25,7 @@ const sendPasswordResetEmail = async (toEmail, resetToken, clientUrl) => {
       tls: {
         // do not fail on invalid certs
         rejectUnauthorized: false
-      },
-      // Force IPv4 because Render sometimes has issues routing IPv6 to Gmail
-      family: 4 
+      }
     });
 
     const resetLink = `${clientUrl}/reset-password/${resetToken}`;
