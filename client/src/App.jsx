@@ -7,6 +7,10 @@ import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import DashboardLayout from './components/layout/DashboardLayout';
+import AdminLayout from './components/layout/AdminLayout';
+import AdminLogin from './pages/admin/AdminLogin';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminUserDetail from './pages/admin/AdminUserDetail';
 import Dashboard from './pages/Dashboard';
 import Timeline from './pages/Timeline';
 import Cards from './pages/Cards';
@@ -38,6 +42,13 @@ const AppContent = () => {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<Navigate to="/admin/dashboard" />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="user/:id" element={<AdminUserDetail />} />
+          </Route>
+
           <Route path="/" element={
             <ProtectedRoute>
               <DashboardLayout />

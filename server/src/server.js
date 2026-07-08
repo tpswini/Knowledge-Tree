@@ -30,6 +30,7 @@ const cardRoutes = require('./routes/cardRoutes');
 const journalRoutes = require('./routes/journalRoutes');
 const goalRoutes = require('./routes/goalRoutes');
 const achievementRoutes = require('./routes/achievementRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes);
@@ -37,6 +38,7 @@ app.use('/api/cards', cardRoutes);
 app.use('/api/journals', journalRoutes);
 app.use('/api/goals', goalRoutes);
 app.use('/api/achievements', achievementRoutes);
+app.use('/api/admin', adminRoutes);
 
 const PORT = process.env.PORT || 5000;
 
