@@ -10,6 +10,12 @@ const sendPasswordResetEmail = async (toEmail, resetToken, clientUrl) => {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS,
     },
+    tls: {
+      // do not fail on invalid certs
+      rejectUnauthorized: false
+    },
+    // Force IPv4 because Render sometimes has issues routing IPv6 to Gmail
+    family: 4 
   });
 
   const resetLink = `${clientUrl}/reset-password/${resetToken}`;
