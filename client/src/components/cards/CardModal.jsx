@@ -4,7 +4,7 @@ import { X, Save, Loader2, Plus, Trash2, Settings, Type, AlignLeft, List, CheckS
 
 export const CARD_SCHEMAS = {
   'Concept': {
-    icon: '',
+    icon: '🌱',
     name: 'Concept',
     fields: [
       { name: 'title', label: 'Title', type: 'text', required: true, isBase: true },
@@ -22,7 +22,7 @@ export const CARD_SCHEMAS = {
     ]
   },
   'Code': {
-    icon: '',
+    icon: '💻',
     name: 'Code',
     fields: [
       { name: 'title', label: 'Title', type: 'text', required: true, isBase: true },
@@ -40,7 +40,7 @@ export const CARD_SCHEMAS = {
     ]
   },
   'Resource': {
-    icon: '',
+    icon: '📚',
     name: 'Resource',
     fields: [
       { name: 'title', label: 'Title', type: 'text', required: true, isBase: true },
@@ -56,7 +56,7 @@ export const CARD_SCHEMAS = {
     ]
   },
   'Project': {
-    icon: '',
+    icon: '🚀',
     name: 'Project',
     fields: [
       { name: 'title', label: 'Project Name', type: 'text', required: true, isBase: true },
@@ -74,7 +74,7 @@ export const CARD_SCHEMAS = {
     ]
   },
   'Quick Note': {
-    icon: '',
+    icon: '⚡',
     name: 'Quick Note',
     fields: [
       { name: 'title', label: 'Title', type: 'text', required: true, isBase: true },
@@ -85,7 +85,7 @@ export const CARD_SCHEMAS = {
     ]
   },
   'Memory': {
-    icon: '',
+    icon: '🧠',
     name: 'Memory',
     fields: [
       { name: 'title', label: 'Question', type: 'text', required: true, isBase: true },
@@ -257,14 +257,14 @@ const CardModal = ({ isOpen, onClose, cardToEdit, initialCategory, initialSchema
              <button type="button" onClick={() => removeCustomField(index)} className="text-red-400 hover:text-red-600"><Trash2 size={16} /></button>
            </div>
         ) : (
-           <label className="text-sm font-semibold text-gray-700">{field.label} {field.required && '*'}</label>
+           <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">{field.label} {field.required && '*'}</label>
         )}
 
         {field.type === 'textarea' || field.type === 'markdown' ? (
           <textarea 
             name={field.name} value={value || ''} onChange={onChange} required={field.required}
             rows={field.type === 'markdown' ? 6 : 3}
-            className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#1a472a]/20 focus:border-[#1a472a] transition-all outline-none resize-none font-sans"
+            className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-[#1a472a]/20 dark:focus:ring-green-500/20 focus:border-[#1a472a] dark:focus:border-green-500 transition-all outline-none resize-none font-sans text-gray-900 dark:text-gray-100"
           />
         ) : field.type === 'code' ? (
           <textarea 
@@ -276,7 +276,7 @@ const CardModal = ({ isOpen, onClose, cardToEdit, initialCategory, initialSchema
           <div className="flex gap-2">
             <select 
               name={field.name} value={value || ''} onChange={onChange} required={field.required}
-              className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#1a472a]/20 focus:border-[#1a472a] transition-all outline-none"
+              className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-[#1a472a]/20 dark:focus:ring-green-500/20 focus:border-[#1a472a] dark:focus:border-green-500 transition-all outline-none text-gray-900 dark:text-gray-100"
             >
               <option value="">Select option...</option>
               {field.options?.map(opt => <option key={opt} value={opt}>{opt}</option>)}
@@ -286,7 +286,7 @@ const CardModal = ({ isOpen, onClose, cardToEdit, initialCategory, initialSchema
                 placeholder="Comma separated options"
                 value={field.options.join(', ')}
                 onChange={(e) => updateCustomField(index, 'options', e.target.value.split(',').map(s => s.trim()))}
-                className="flex-1 px-3 py-1 text-xs border rounded-lg"
+                className="flex-1 px-3 py-1 text-xs border border-gray-200 dark:border-slate-700 rounded-lg text-gray-900 dark:text-gray-100 bg-white dark:bg-slate-800"
               />
             )}
           </div>
@@ -301,7 +301,7 @@ const CardModal = ({ isOpen, onClose, cardToEdit, initialCategory, initialSchema
         ) : (
           <input 
             type={field.type} name={field.name} value={value || ''} onChange={onChange} required={field.required}
-            className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#1a472a]/20 focus:border-[#1a472a] transition-all outline-none"
+            className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-[#1a472a]/20 dark:focus:ring-green-500/20 focus:border-[#1a472a] dark:focus:border-green-500 transition-all outline-none text-gray-900 dark:text-gray-100"
           />
         )}
       </div>
@@ -312,29 +312,29 @@ const CardModal = ({ isOpen, onClose, cardToEdit, initialCategory, initialSchema
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm overflow-y-auto">
-      <div className="bg-white rounded-2xl w-full max-w-3xl shadow-xl flex flex-col max-h-[90vh]">
+      <div className="bg-white dark:bg-surface rounded-2xl w-full max-w-3xl shadow-xl flex flex-col max-h-[90vh] border dark:border-slate-700">
         
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-gray-100 bg-gray-50/50 rounded-t-2xl">
+        <div className="flex items-center justify-between p-5 border-b border-gray-100 dark:border-slate-700 bg-gray-50/50 dark:bg-slate-800/50 rounded-t-2xl">
           <div className="flex items-center gap-3">
-            <div className="text-2xl bg-white w-10 h-10 rounded-xl flex items-center justify-center shadow-sm border border-gray-100">
+            <div className="text-2xl bg-white dark:bg-slate-800 w-10 h-10 rounded-xl flex items-center justify-center shadow-sm border border-gray-100 dark:border-slate-700">
               {schema?.icon || ''}
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900 leading-tight">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white leading-tight">
                 {cardToEdit ? 'Edit ' : (activeCategory === 'Custom' && isBuilderMode ? 'Design ' : 'Plant ')} 
                 {activeCategory === 'Custom' ? (schema?.name || 'Custom Branch') : schema?.name}
               </h2>
-              <p className="text-sm text-gray-500 font-medium">{activeCategory === 'Custom' && isBuilderMode ? 'Build your own card template' : 'Grow your knowledge tree'}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">{activeCategory === 'Custom' && isBuilderMode ? 'Build your own card template' : 'Grow your knowledge tree'}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             {activeCategory === 'Custom' && !isBuilderMode && !cardToEdit && (
-               <button onClick={() => setIsBuilderMode(true)} className="p-2 text-gray-500 hover:text-[#1a472a] bg-white border border-gray-200 rounded-lg shadow-sm">
+               <button onClick={() => setIsBuilderMode(true)} className="p-2 text-gray-500 dark:text-gray-400 hover:text-[#1a472a] dark:hover:text-green-400 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-sm">
                  <Settings size={18} />
                </button>
             )}
-            <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-600 hover:bg-white border border-transparent hover:border-gray-200 hover:shadow-sm rounded-lg transition-all">
+            <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-white dark:hover:bg-slate-800 border border-transparent hover:border-gray-200 dark:hover:border-slate-700 hover:shadow-sm rounded-lg transition-all">
               <X size={20} />
             </button>
           </div>
@@ -359,14 +359,14 @@ const CardModal = ({ isOpen, onClose, cardToEdit, initialCategory, initialSchema
                     <input 
                       value={customSchema.name} onChange={(e) => setCustomSchema({...customSchema, name: e.target.value})}
                       placeholder="e.g., Interview Card"
-                      className="w-full px-4 py-2 bg-white border border-gray-200 rounded-xl outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                      className="w-full px-4 py-2 bg-white border border-gray-200 rounded-xl outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 text-gray-900"
                     />
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-sm font-semibold text-gray-700">Icon Emoji</label>
                     <input 
                       value={customSchema.icon} onChange={(e) => setCustomSchema({...customSchema, icon: e.target.value})}
-                      className="w-full px-4 py-2 bg-white border border-gray-200 rounded-xl outline-none text-center text-xl"
+                      className="w-full px-4 py-2 bg-white border border-gray-200 rounded-xl outline-none text-center text-xl text-gray-900"
                     />
                   </div>
                 </div>
@@ -418,10 +418,10 @@ const CardModal = ({ isOpen, onClose, cardToEdit, initialCategory, initialSchema
                 {/* Fixed base title if custom doesn't define it */}
                 {activeCategory === 'Custom' && (
                   <div className="col-span-full space-y-1.5">
-                    <label className="text-sm font-semibold text-gray-700">Title *</label>
+                    <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Title *</label>
                     <input 
                       name="title" value={formData.title} onChange={handleBaseChange} required
-                      className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#1a472a]/20 focus:border-[#1a472a] outline-none"
+                      className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-[#1a472a]/20 dark:focus:ring-green-500/20 focus:border-[#1a472a] dark:focus:border-green-500 outline-none text-gray-900 dark:text-gray-100"
                     />
                   </div>
                 )}
@@ -433,14 +433,14 @@ const CardModal = ({ isOpen, onClose, cardToEdit, initialCategory, initialSchema
         </div>
 
         {/* Footer */}
-        <div className="p-5 border-t border-gray-100 bg-gray-50 rounded-b-2xl flex justify-between items-center shrink-0">
+        <div className="p-5 border-t border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-800/80 rounded-b-2xl flex justify-between items-center shrink-0">
           <div>
              {activeCategory === 'Custom' && isBuilderMode ? (
-               <button type="button" onClick={() => setIsBuilderMode(false)} className="text-sm font-medium text-blue-600 hover:underline">
+               <button type="button" onClick={() => setIsBuilderMode(false)} className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">
                  Preview Form
                </button>
              ) : activeCategory === 'Custom' && !cardToEdit ? (
-               <button type="button" onClick={() => setIsBuilderMode(true)} className="text-sm font-medium text-blue-600 hover:underline">
+               <button type="button" onClick={() => setIsBuilderMode(true)} className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">
                  Back to Builder
                </button>
              ) : null}
@@ -448,7 +448,7 @@ const CardModal = ({ isOpen, onClose, cardToEdit, initialCategory, initialSchema
           <div className="flex gap-3">
             <button 
               type="button" onClick={onClose}
-              className="px-5 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors shadow-sm"
+              className="px-5 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors shadow-sm"
             >
               Cancel
             </button>
