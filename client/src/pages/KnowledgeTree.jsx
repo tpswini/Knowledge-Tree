@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Network, Folder, FolderOpen, FileText, ChevronRight, ChevronDown, Plus } from 'lucide-react';
+import { TreePine, Folder, FolderOpen, FileText, ChevronRight, ChevronDown, Plus } from 'lucide-react';
 import CardModal from '../components/cards/CardModal';
 
 const KnowledgeTree = () => {
@@ -107,7 +107,7 @@ const KnowledgeTree = () => {
         ) : cards.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-              <Network size={24} className="text-gray-400" />
+              <TreePine size={24} className="text-gray-400" />
             </div>
             <h4 className="text-gray-900 font-bold mb-1">Your tree is empty</h4>
             <p className="text-gray-500 text-sm max-w-xs mb-6">Plant some knowledge cards to watch your tree grow!</p>
@@ -116,7 +116,7 @@ const KnowledgeTree = () => {
           <div className="space-y-1">
             {/* Root of the tree */}
             <div className="flex items-center gap-2 text-gray-900 font-bold text-lg mb-4 ml-1">
-              <Network className="text-[#1a472a]" size={22} /> My Knowledge Base
+              <TreePine className="text-[#1a472a]" size={22} /> My Knowledge Base
             </div>
 
             {/* Branches (Categories) */}

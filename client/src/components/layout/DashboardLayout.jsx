@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { ThemeContext } from '../../context/ThemeContext';
-import { Leaf, LayoutDashboard, Library, Target, Award, LogOut, Menu, Home, Network, BookOpen, Clock, Book, X, Brain, User, Download, Moon, Sun } from 'lucide-react';
+import { Leaf, LayoutDashboard, Library, Target, Award, LogOut, Menu, Home, TreePine, BookOpen, Clock, Book, X, Brain, User, Download, Moon, Sun } from 'lucide-react';
 
 const DashboardLayout = () => {
   const { logout, user } = useContext(AuthContext);
@@ -19,7 +19,7 @@ const DashboardLayout = () => {
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: <Home size={20} /> },
     { name: 'Timeline', path: '/timeline', icon: <Clock size={20} /> },
-    { name: 'Knowledge Tree', path: '/tree', icon: <Network size={20} /> },
+    { name: 'Knowledge Tree', path: '/tree', icon: <TreePine size={20} /> },
     { name: 'Knowledge Cards', path: '/cards', icon: <BookOpen size={20} /> },
     { name: 'Revision', path: '/revision', icon: <Brain size={20} /> },
     { name: 'Daily Journal', path: '/journal', icon: <Book size={20} /> },
