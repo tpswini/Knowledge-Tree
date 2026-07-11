@@ -139,15 +139,17 @@ const CardViewModal = ({ isOpen, onClose, card, onEdit }) => {
             </div>
           </div>
           <div className="flex gap-2 relative z-10">
-            <button 
-              onClick={() => {
-                onEdit(card);
-                onClose();
-              }}
-              className="p-2.5 text-gray-600 hover:text-[#1a472a] bg-white/50 hover:bg-white rounded-xl shadow-sm transition-all flex items-center gap-2 font-semibold text-sm"
-            >
-              <Edit2 size={16} /> <span className="hidden sm:inline">Edit</span>
-            </button>
+            {onEdit && (
+              <button 
+                onClick={() => {
+                  onEdit(card);
+                  onClose();
+                }}
+                className="p-2.5 text-gray-600 hover:text-[#1a472a] bg-white/50 hover:bg-white rounded-xl shadow-sm transition-all flex items-center gap-2 font-semibold text-sm"
+              >
+                <Edit2 size={16} /> <span className="hidden sm:inline">Edit</span>
+              </button>
+            )}
             <button 
               onClick={onClose}
               className="p-2.5 text-gray-500 hover:text-gray-700 bg-white/50 hover:bg-white rounded-xl shadow-sm transition-all"

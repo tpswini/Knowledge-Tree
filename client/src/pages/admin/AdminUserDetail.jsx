@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeft, BookOpen, Calendar, Target, User, Trash2 } from 'lucide-react';
+import CardViewModal from '../../components/cards/CardViewModal';
 
 const AdminUserDetail = () => {
   const { id } = useParams();
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('cards');
+  const [viewCard, setViewCard] = useState(null);
   const navigate = useNavigate();
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -144,7 +146,11 @@ const AdminUserDetail = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {cards.length === 0 ? <p className="col-span-full text-center text-gray-500 py-10">No cards stored.</p> : null}
             {cards.map(card => (
-              <div key={card.id} className="border border-gray-200 rounded-xl p-5 hover:shadow-md transition-shadow">
+              <div 
+                key={card.id} 
+                onClick={() => setViewCard(card)}
+                className="border border-gray-200 rounded-xl p-5 hover:shadow-md transition-shadow cursor-pointer"
+              >
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="font-bold text-gray-900">{card.title}</h3>
                   {card.category && <span className="bg-emerald-50 text-emerald-700 text-xs px-2 py-1 rounded-md font-medium">{card.category}</span>}
@@ -245,6 +251,13 @@ const AdminUserDetail = () => {
           </div>
         </div>
       )}
+
+      {/* Card View Modal */}
+      <CardViewModal
+        isOpen={!!viewCard}
+        card={viewCard}
+        onClose={() => setViewCard(null)}
+      />
     </div>
   );
 };
